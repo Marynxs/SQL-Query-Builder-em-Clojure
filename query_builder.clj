@@ -86,10 +86,15 @@
         (aplicar-comparador where)
         where))))
 
-(defn gerar-sql [{:keys [tabela campos filtro]}]
-  (let [cols (if (= campos :*) "*" (str/join ", " campos))
-        base (str "SELECT " cols " FROM " tabela)]
-    (if filtro (str base " WHERE " filtro) base)))
+(defn gerar-sql [consulta]
+  (let [tabela (:tabela consulta)
+        campos (:campos consulta)
+        filtro (:filtro consulta)
+        cols   (if (= campos :*) "*" (str/join ", " campos))
+        base   (str "SELECT " cols " FROM " tabela)]
+    (if filtro
+      (str base " WHERE " filtro)
+      base)))
 
 ;; Existe um bug no mycompiler que nao funciona acentos
 ;; teste
