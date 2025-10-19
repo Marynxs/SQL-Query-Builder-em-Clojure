@@ -30,15 +30,24 @@
 (defn- in? [campo valores]
   (str (nome-campo campo) " IN " (valor-sql valores)))
 
-(defn- aplicar-comparador [{:keys [campo igual_a valor maior_que menor_que 
-                                   diferente_de like em]}]
-  (cond
-    (or igual_a valor)    (igual? campo (or igual_a valor))
-    maior_que             (maior? campo maior_que)
-    menor_que             (menor? campo menor_que)
-    diferente_de          (diferente? campo diferente_de)
-    like                  (parecido? campo like)
-    em                    (in? campo em)))
+(defn- aplicar-comparador [m]
+  (let [campo        (:campo m)
+        igual_a      (:igual_a m)
+        valor        (:valor m)
+        maior_que    (:maior_que m)
+        menor_que    (:menor_que m)
+        diferente_de (:diferente_de m)
+        like         (:like m)
+        em           (:em m)]
+
+    ;; Pesquisamos e vimos que o cond deixa o código mais simples e legível que usar vários if aninhados.
+    (cond
+      (or igual_a valor) (igual? campo (or igual_a valor))
+      maior_que          (maior? campo maior_que)
+      menor_que          (menor? campo menor_que)
+      diferente_de       (diferente? campo diferente_de)
+      like               (parecido? campo like)
+      em                 (in? campo em))))
 
 (defn- bloco->sql [x]
   (if (map? x)
